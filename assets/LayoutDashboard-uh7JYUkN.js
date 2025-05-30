@@ -1,1 +1,0 @@
-import{j as s,O as e}from"./index-BoME-oNI.js";function a(){return s.jsx("div",{className:"flex min-h-svh w-full items-center justify-center p-6 md:p-10",children:s.jsx("div",{className:"w-full max-w-sm",children:s.jsx(e,{})})})}export{a as default};

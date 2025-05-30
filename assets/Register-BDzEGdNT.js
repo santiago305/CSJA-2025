@@ -1,1 +1,0 @@
-import{j as e,r as s,_ as r}from"./index-BoME-oNI.js";const t=s.lazy(()=>r(()=>import("./RegisterForm-DiTpxX27.js"),[]));function i(){return e.jsx("div",{className:"flex min-h-svh w-full items-center justify-center p-6 md:p-10",children:e.jsx("div",{className:"w-full max-w-sm",children:e.jsx(t,{})})})}export{i as default};
