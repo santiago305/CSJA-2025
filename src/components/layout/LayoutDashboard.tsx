@@ -13,8 +13,15 @@ export default function LayoutDashboard() {
         className="flex-1 transition-all duration-300 ease-in-out"
         style={{ marginLeft: collapsedWidth }}
       >
-        <div className="p-6">
-          <Outlet />
+        <div
+        className="w-full h-full"
+        >
+          <div>
+            top
+          </div>
+          <div className="p-6">
+            <Outlet />
+          </div>
         </div>
       </main>
     </div>
