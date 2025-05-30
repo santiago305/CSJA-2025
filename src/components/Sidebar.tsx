@@ -2,15 +2,18 @@ import { useState, useEffect, useRef } from "react";
 import { Menu, X } from "react-feather";
 
 interface SidebarProps {
+  isFixedExpanded: boolean;
+  setIsFixedExpanded: (value: boolean) => void;
   expandedWidth?: number;
   collapsedWidth?: number;
 }
 
 export default function Sidebar({
+  isFixedExpanded,
+  setIsFixedExpanded,
   expandedWidth = 400,
   collapsedWidth = 70,
 }: SidebarProps) {
-  const [isFixedExpanded, setIsFixedExpanded] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [isOverlay, setIsOverlay] = useState(false);
 
@@ -72,15 +75,9 @@ export default function Sidebar({
           <button
             className="self-end m-2 p-1 rounded bg-gray-700 hover:bg-gray-600 transition"
             onClick={() => {
-              if (isFixedExpanded) {
-                setIsFixedExpanded(false);
-                setIsHovering(false);
-                setIsOverlay(false);
-              } else {
-                setIsFixedExpanded(true);
-                setIsHovering(false);
-                setIsOverlay(false);
-              }
+              setIsFixedExpanded(!isFixedExpanded);
+              setIsHovering(false);
+              setIsOverlay(false);
             }}
             title={isFixedExpanded ? "Colapsar sidebar" : "Expandir sidebar"}
           >
