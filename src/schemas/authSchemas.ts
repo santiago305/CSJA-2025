@@ -13,5 +13,6 @@ export const LoginSchema = z.object({
  */
 export const RegisterSchema = LoginSchema.extend({
   name: z.string().min(1, 'El nombre es obligatorio'),
+  lastName: z.string().min(1, 'EL apellido es obligatorio')
 });
 

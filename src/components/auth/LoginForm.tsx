@@ -38,7 +38,7 @@ function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
     } catch (error) {
       // showFlash(errorResponse("Credenciales inválidas o error de red"));
     } finally {
-      // setSubmitting(false);
+      setSubmitting(false);
     }
   };
 
