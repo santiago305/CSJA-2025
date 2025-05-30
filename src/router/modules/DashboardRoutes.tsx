@@ -9,17 +9,17 @@
  */
 
 import { lazy } from "react";
-import { RouteObject } from "react-router-dom";
 import { dashboardPublicRoutes } from "./dashboard/publicDashboardRoutes";
 import { adminRoutes } from "./dashboard/adminRoutes";
 import { monitorRoutes } from "./dashboard/monitorRoutes";
 import { usersRoutes } from "./dashboard/usersRoutes";
+import type { RouteObject } from "react-router-dom";
 import { RoutesPaths } from "../config/routesPaths";
-import PrivateRoute from "../guards/PrivateRoute";
 
-const DashboardLayout = lazy(() => import("@/components/layout/LayoutDashboard"));
-const Dashboard = lazy(() => import("@/pages/dashboard/Dashboard"));
-const ErrorPage = lazy(() => import("@/pages/Error404"));
+
+const DashboardLayout = lazy(() => import("../../components/layout/LayoutDashboard"));
+const Dashboard = lazy(() => import("../../pages/dashboard/Dashboard"));
+const ErrorPage = lazy(() => import("../../pages/Error404"));
 
 export const dashboardRoutes: RouteObject[] = [
   {
