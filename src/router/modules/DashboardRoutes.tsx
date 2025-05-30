@@ -23,7 +23,7 @@ const ErrorPage = lazy(() => import("../../pages/Error404"));
 
 export const dashboardRoutes: RouteObject[] = [
   {
-    path: RoutesPaths.dashboard,
+    path: `${RoutesPaths.root}${RoutesPaths.dashboard}`,
     element: (
       // <PrivateRoute>
         <DashboardLayout />
