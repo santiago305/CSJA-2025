@@ -1,10 +1,16 @@
 
+import { Suspense } from 'react'
 import './globals.css'
+import { RouterProvider } from 'react-router-dom'
+import { router } from './router/Router'
 function App() {
 
 
   return (
-     "hola"
+    // por encima va el proveedor
+    <Suspense fallback={<>Cargando aplicación...</>}>
+      <RouterProvider router={router} />
+    </Suspense>
   )
 }
 
