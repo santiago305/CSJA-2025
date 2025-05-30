@@ -1,8 +1,11 @@
 export const RoutesPaths = {
 
+  // ruta madre
+  root: "/CSJA-2025/",
+
   // 🔐 Rutas de autenticación
-  login: "/login",
-  register: "/register",
+  login: "login",
+  register: "register",
 
   // 📊 Rutas de Dashboard
   dashboard: "/dashboard",

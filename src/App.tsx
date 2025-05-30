@@ -1,7 +1,7 @@
 
 import { Suspense } from 'react'
 import './globals.css'
-import { RouterProvider } from 'react-router-dom'
+import { BrowserRouter, RouterProvider } from 'react-router-dom'
 import { router } from './router/Router'
 function App() {
 
@@ -9,7 +9,7 @@ function App() {
   return (
     // por encima va el proveedor
     <Suspense fallback={<>Cargando aplicación...</>}>
-      <RouterProvider router={router} />
+          <RouterProvider router={router} />
     </Suspense>
   )
 }

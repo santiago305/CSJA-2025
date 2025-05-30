@@ -6,7 +6,7 @@ import ErrorPage from '../pages/Error404';
 
 export const router = createBrowserRouter([
    {
-    path: "/",
+    path: "/CSJA-2025/",
     element: <Navigate to={RoutesPaths.login} replace />,
   },
   ...authRoutes,

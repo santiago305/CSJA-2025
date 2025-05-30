@@ -7,5 +7,5 @@ export default defineConfig({
     react(), 
     tailwindcss()
   ],
-  base: ' https://santiago305.github.io/CSJA-2025'
+  base: ' https://santiago305.github.io/CSJA-2025/'
 })
