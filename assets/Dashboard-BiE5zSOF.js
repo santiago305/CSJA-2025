@@ -1,1 +1,0 @@
-import{j as a}from"./index-t0QBi0Nj.js";function e(){return a.jsxs("div",{children:[a.jsx("h1",{children:"Dashboard"}),a.jsx("p",{children:"Welcome to the dashboard! Here you can manage your account and view your data."})]})}export{e as default};
