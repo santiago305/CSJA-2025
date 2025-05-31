@@ -1,5 +1,8 @@
-import { useState, useEffect, useRef } from "react";
-import { Menu, X } from "react-feather";
+import { useState, useRef, useEffect, type ReactElement } from "react";
+import { Menu, X, Grid, Layers, Users, Archive, Settings } from "react-feather";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faReact } from '@fortawesome/free-brands-svg-icons';
+import { useSidebarMenu } from "../hooks/useSidebarMenu";
 
 interface SidebarProps {
   isFixedExpanded: boolean;
@@ -11,54 +14,57 @@ interface SidebarProps {
 export default function Sidebar({
   isFixedExpanded,
   setIsFixedExpanded,
-  expandedWidth = 400,
+  expandedWidth = 250,
   collapsedWidth = 70,
 }: SidebarProps) {
   const [isHovering, setIsHovering] = useState(false);
   const [isOverlay, setIsOverlay] = useState(false);
-
   const timeoutRef = useRef<number | null>(null);
+
+  const userId = 7; // Prueba. Cambiar dinámico luego.
+  const { menu, loading, error } = useSidebarMenu(userId);
 
   const onMouseEnter = () => {
     if (isFixedExpanded) return;
-
     setIsOverlay(true);
     setIsHovering(false);
-
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = window.setTimeout(() => {
-      setIsHovering(true);
-    }, 100);
+    timeoutRef.current = window.setTimeout(() => setIsHovering(true), 100);
   };
 
   const onMouseLeave = () => {
     if (isFixedExpanded) return;
-
     setIsHovering(false);
-
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    timeoutRef.current = window.setTimeout(() => {
-      setIsOverlay(false);
-    }, 300);
+    timeoutRef.current = window.setTimeout(() => setIsOverlay(false), 300);
   };
 
   useEffect(() => {
     return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     };
   }, []);
 
   const width = isFixedExpanded || isHovering ? expandedWidth : collapsedWidth;
+  const isExpanded = isFixedExpanded || isHovering;
+
+  const iconMap: Record<string, ReactElement> = {
+    Dashboard: <Grid size={16} />,
+    Tickets: <Archive size={16} />,
+    "Respuestas Predeterminada": <Settings size={16} />,
+    Agenda: <Menu size={16} />,
+    Areas: <Layers size={16} />,
+    Usuarios: <Users size={16} />,
+    Roles: <Settings size={16} />,
+  };
 
   return (
     <aside
-      className={`
-        bg-gray-800 text-white h-full
-        overflow-hidden
-        transition-all duration-300 ease-in-out
-        ${isOverlay ? "absolute z-50 shadow-lg" : "relative"}
-        ${!isFixedExpanded ? "cursor-pointer" : ""}
-      `}
+      className={`bg-white h-full overflow-hidden transition-all duration-300 ease-in-out shadow-md ${
+        isOverlay ? "absolute z-50" : "relative"
+      } ${!isFixedExpanded ? "cursor-pointer" : ""}`}
       style={{
         top: 0,
         left: 0,
@@ -71,33 +77,56 @@ export default function Sidebar({
       onMouseLeave={onMouseLeave}
     >
       <div className="flex flex-col h-full">
-        {(isFixedExpanded || isHovering) && (
-          <button
-            className="self-end m-2 p-1 rounded bg-gray-700 hover:bg-gray-600 transition"
-            onClick={() => {
-              setIsFixedExpanded(!isFixedExpanded);
-              setIsHovering(false);
-              setIsOverlay(false);
-            }}
-            title={isFixedExpanded ? "Colapsar sidebar" : "Expandir sidebar"}
-          >
-            {isFixedExpanded ? <X size={16} /> : <Menu size={16} />}
-          </button>
+        {/* Header */}
+        {isExpanded && (
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+            <div className="flex items-center space-x-2">
+              <FontAwesomeIcon icon={faReact} className="text-purple-600" />
+              <span className="font-bold text-purple-600 text-lg">Cuba</span>
+            </div>
+            <button
+              className="p-1 rounded"
+              onClick={() => {
+                setIsFixedExpanded(!isFixedExpanded);
+                setIsHovering(false);
+                setIsOverlay(false);
+              }}
+            >
+              {isFixedExpanded ? <X size={16} /> : <Menu size={16} />}
+            </button>
+          </div>
         )}
 
-        <nav className="flex-1 p-4 space-y-4 select-none">
-          <div className="flex items-center space-x-3">
-            <Menu size={24} />
-            {(isFixedExpanded || isHovering) && (
-              <span className="whitespace-nowrap">Inicio</span>
-            )}
-          </div>
-          <div className="flex items-center space-x-3">
-            <Menu size={24} />
-            {(isFixedExpanded || isHovering) && (
-              <span className="whitespace-nowrap">Usuarios</span>
-            )}
-          </div>
+        {/* Loading y error */}
+        {loading && (
+          <div className="p-4 text-center text-gray-500">Cargando menú...</div>
+        )}
+        {error && <div className="p-4 text-center text-red-500">{error}</div>}
+
+        {/* Menú */}
+        <nav className="flex-1 p-2 space-y-4 select-none overflow-auto">
+          {menu.map((section, idx) => (
+            <div key={idx}>
+              {isExpanded && (
+                <div className="text-xs font-bold text-purple-700 px-2 py-1 bg-purple-100 rounded">
+                  {section.header}
+                </div>
+              )}
+              <div className="mt-2 space-y-2">
+                {section.items.map((item) => (
+                  <div
+                    key={item.row}
+                    className="flex items-center space-x-3 px-2 py-1 hover:bg-purple-50 rounded cursor-pointer"
+                  >
+                    {iconMap[item.nombre] || <Menu size={16} />}
+                    {isExpanded && (
+                      <span className="whitespace-nowrap">{item.nombre}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </nav>
       </div>
     </aside>

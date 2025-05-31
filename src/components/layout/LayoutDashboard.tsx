@@ -7,7 +7,7 @@ import TopSidebar from "../topSidebar";
 export default function LayoutDashboard() {
   const [isFixedExpanded, setIsFixedExpanded] = useState(false);
 
-  const expandedWidth = 400;
+  const expandedWidth = 250;
   const collapsedWidth = 70;
 
   const sidebarMargin = isFixedExpanded ? expandedWidth : collapsedWidth;

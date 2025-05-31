@@ -7,5 +7,14 @@ export default defineConfig({
     react(), 
     tailwindcss()
   ],
-  base: ' https://santiago305.github.io/CSJA-2025/'
+  base: ' https://santiago305.github.io/CSJA-2025/',
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://www.desarrolloaqp.somee.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
 })
