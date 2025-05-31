@@ -1,14 +1,20 @@
 /**
  * Grupo de rutas para la autenticación.
  */
+// export const API_AUTH_GROUP = {
+//   authentication: '/SeguridadUsuario/Login',
+//   register: '/SeguridadUsuario/Registrar',
+//   logout: '/SeguridadUsuario/logout',
+//   refreshToken: '/SeguridadUsuario/refresh',
+//   validateToken: '/SeguridadUsuario/validarToken'
+// };
 export const API_AUTH_GROUP = {
-  authentication: '/SeguridadUsuario/Login',
-  register: '/SeguridadUsuario/Registrar',
-  logout: '/SeguridadUsuario/logout',
-  refreshToken: '/SeguridadUsuario/refresh',
-  validateToken: '/SeguridadUsuario/validate-token'
+  authentication: '/auth/login',
+  register: '/auth/register',
+  logout: '/auth/logout',
+  refreshToken: '/auth/refresh',
+  validateToken: '/auth/validate-token'
 };
-
 export const API_DASHBOARD_GROUP = {
   getDashboardData: (userId: string) => `/MenuSistema/MenuListar/${userId}`,
   // getDashboardStats: '/dashboard/stats',
