@@ -15,7 +15,7 @@ import type { RegisterCredentials } from "../../types/auth";
 // import { useFlashMessage } from "@/hooks/useFlashMessage";
 // import { errorResponse, successResponse } from "@/common/utils/response";
 
-function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
+function RegisterForm({ className, ...props }: React.ComponentProps<"div">) {
   const [submitting, setSubmitting] = useState(false)
   const navigate = useNavigate()
   // const { showFlash, clearFlash } = useFlashMessage();
@@ -111,4 +111,4 @@ function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   );
 }
 
-export default LoginForm;
+export default RegisterForm;

@@ -17,9 +17,11 @@ import type { RouteObject } from "react-router-dom";
 import { RoutesPaths } from "../config/routesPaths";
 
 
+
 const DashboardLayout = lazy(() => import("../../components/layout/LayoutDashboard"));
 const Dashboard = lazy(() => import("../../pages/dashboard/Dashboard"));
 const ErrorPage = lazy(() => import("../../pages/Error404"));
+const RegisterUserDashboard = lazy(() => import("../../pages/dashboard/RegisterUserDashboard"));
 
 export const dashboardRoutes: RouteObject[] = [
   {
@@ -32,6 +34,10 @@ export const dashboardRoutes: RouteObject[] = [
     errorElement: <ErrorPage />,
     children: [
       { index: true, element: <Dashboard /> }, // /dashboard
+      { 
+        path: RoutesPaths.dashboardRegister,
+        element: <RegisterUserDashboard /> 
+      }, // /dashboard/register
       // ...dashboardPublicRoutes,
       // ...adminRoutes,
       // ...monitorRoutes,
