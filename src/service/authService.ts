@@ -47,8 +47,9 @@ export const registerUser = async (payload: RegisterCredentials):Promise<AuthSer
  */
 export const checkTokenValidity = async () => {
   try {
-    const response = await axiosInstance.get(API_AUTH_GROUP.validateToken);
-    return response.data.message === 'Token es válido';
+    const response = await axiosInstance.post(API_AUTH_GROUP.validateToken);
+    console.log("Token válido", response.data);
+    return response.data.isSuccess === true;
   } catch (error) {
     console.error("Token no válido o expirado", error);
     return false;

@@ -34,7 +34,7 @@ function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
       if (response.success){
         console.log(response.message)
         // showFlash(successResponse(response.message));
-        navigate(RoutesPaths.dashboard, { replace: true });
+        navigate(`${RoutesPaths.root}${RoutesPaths.dashboard}`, { replace: true });
       } else {
         console.log(response.message)
         // showFlash(errorResponse(response.message));
@@ -60,20 +60,20 @@ function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
               <FormField
-                name="email" 
+                name="correo" 
                 label="Correo Electrónico" 
                 placeholder="test@gmail.com" 
                 register={register} 
-                error={errors.email?.message} 
+                error={errors.correo?.message} 
               />
 
               <FormField 
-                name="password" 
+                name="clave" 
                 label="Contraseña" 
                 placeholder="password"
                 type="password" 
                 register={register} 
-                error={errors.password?.message} 
+                error={errors.clave?.message} 
               />
 
               <Button type="submit" className="w-full" disabled={submitting}>

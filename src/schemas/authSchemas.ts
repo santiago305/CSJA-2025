@@ -4,8 +4,8 @@ import { z } from 'zod';
  * Esquema de validación para el inicio de sesión.
  */
 export const LoginSchema = z.object({
-  email: z.string().min(1, 'El email es obligatorio').email('Email inválido'),
-  password: z.string().min(1, 'La Contraseña es obligatoria').min(4, 'La contraseña debe tener al menos 4 caracteres'),
+  correo: z.string().min(1, 'El email es obligatorio').email('Email inválido'),
+  clave: z.string().min(1, 'La Contraseña es obligatoria').min(4, 'La contraseña debe tener al menos 4 caracteres'),
 });
 
 /**

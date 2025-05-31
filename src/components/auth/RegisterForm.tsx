@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { cn } from "../../lib/utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterSchema } from "../..//schemas/authSchemas";
-// import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "../../hooks/useAuth";
 import FormField from "../ui/formField";
 import { RoutesPaths } from "../../router/config/routesPaths";
 import type { RegisterCredentials } from "../../types/auth";
@@ -17,26 +17,29 @@ import type { RegisterCredentials } from "../../types/auth";
 
 function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
   const [submitting, setSubmitting] = useState(false)
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
   // const { showFlash, clearFlash } = useFlashMessage();
-  // const { login } = useAuth();
+  const { Register } = useAuth();
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterCredentials>({
     resolver: zodResolver(RegisterSchema),
   });
 
   const onSubmit = async (
-    // data: RegisterCredentials
+    data: RegisterCredentials
   ) => {
     setSubmitting(true);
     try {
-      // const response = await login(data); 
-      // if (response.success){
-      //   showFlash(successResponse(response.message));
-      //   navigate(RoutesPaths.home, { replace: true });
-      // } else {
-      //   showFlash(errorResponse(response.message));
-      // }
-    } catch (error) {
+      const response = await Register(data); 
+        if (response.success){
+            console.log(response.message)
+          // showFlash(successResponse(response.message));
+          navigate(`${RoutesPaths.root}${RoutesPaths.dashboard}`, { replace: true });
+        } else {
+          console.log(response.message)
+          // showFlash(errorResponse(response.message));
+        }
+    } catch (error:any) {
+      console.log("error de red", error)
       // showFlash(errorResponse("Credenciales inválidas o error de red"));
     } finally {
       setSubmitting(false);

@@ -10,7 +10,7 @@ export const AuthProvider = ({ children }: PropsUrl) => {
 
   const checkAuth = async () => {
     try {
-      const valid = await checkTokenValidity
+      const valid = await checkTokenValidity()
       if(!valid) {
         setIsAuthenticated(false)
         setLoading(false)
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: PropsUrl) => {
   const login = async (payload: LoginCredentials): Promise<AuthResponse> => {
     try {
       const data = await loginUser(payload);
-      if (data?.access_token) {
+       if (data?.token){
         await checkAuth();
         return { success: true, message: "Inicio de sesión exitoso" };
       } else {
