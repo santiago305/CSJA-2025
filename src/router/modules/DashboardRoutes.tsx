@@ -9,10 +9,10 @@
  */
 
 import { lazy } from "react";
-import { dashboardPublicRoutes } from "./dashboard/publicDashboardRoutes";
-import { adminRoutes } from "./dashboard/adminRoutes";
-import { monitorRoutes } from "./dashboard/monitorRoutes";
-import { usersRoutes } from "./dashboard/usersRoutes";
+// import { dashboardPublicRoutes } from "./dashboard/publicDashboardRoutes";
+// import { adminRoutes } from "./dashboard/adminRoutes";
+// import { monitorRoutes } from "./dashboard/monitorRoutes";
+// import { usersRoutes } from "./dashboard/usersRoutes";
 import type { RouteObject } from "react-router-dom";
 import { RoutesPaths } from "../config/routesPaths";
 
@@ -32,10 +32,10 @@ export const dashboardRoutes: RouteObject[] = [
     errorElement: <ErrorPage />,
     children: [
       { index: true, element: <Dashboard /> }, // /dashboard
-      ...dashboardPublicRoutes,
-      ...adminRoutes,
-      ...monitorRoutes,
-      ...usersRoutes,
+      // ...dashboardPublicRoutes,
+      // ...adminRoutes,
+      // ...monitorRoutes,
+      // ...usersRoutes,
     ],
   },
 ];

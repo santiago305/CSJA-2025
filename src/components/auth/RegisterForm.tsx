@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { cn } from "../../lib/utils";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,7 +24,9 @@ function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
     resolver: zodResolver(RegisterSchema),
   });
 
-  const onSubmit = async (data: RegisterCredentials) => {
+  const onSubmit = async (
+    // data: RegisterCredentials
+  ) => {
     setSubmitting(true);
     try {
       // const response = await login(data); 

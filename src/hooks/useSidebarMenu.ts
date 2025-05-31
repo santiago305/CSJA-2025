@@ -13,8 +13,9 @@ export function useSidebarMenu(userId: number) {
       setLoading(true);
       setError(null);
       try {
+        const BASE_URL = import.meta.env.BASE_URL
         const response = await axios.get<MenuItem[]>(
-          `/api/api/MenuSistema/MenuListar/${userId}`
+          `${BASE_URL}/api/MenuSistema/MenuListar/${userId}`
         );
         const grouped = groupMenuData(response.data);
         setMenu(grouped);
