@@ -23,7 +23,7 @@ export const UserMenu = () => {
       {/* Trigger: Whole UserBox */}
       <div
         onClick={() => setOpen((prev) => !prev)}
-        className="flex items-center gap-3 cursor-pointer px-3 py-2 rounded-lg hover:bg-gray-100 transition"
+        className="flex items-center gap-3 cursor-pointer px-2 py-2 rounded-lg hover:bg-gray-100 transition"
       >
         <img
           src="https://i.pravatar.cc/40?img=68"
@@ -46,7 +46,7 @@ export const UserMenu = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -5, scale: 0.98 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50"
+            className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg  z-50"
           >
             <div className="py-1">
               <button
