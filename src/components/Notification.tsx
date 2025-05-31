@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -57,7 +57,6 @@ export default function Notification() {
   //   }
   // }
 
-  // Marca notificación individual como leída
   const markAsRead = (id: string) => {
     setNotifications(prev =>
       prev.map(notif =>
@@ -65,10 +64,8 @@ export default function Notification() {
       )
     );
 
-    // Llamar a la API para marcar como leída (comentado)
     // markNotificationReadAPI(id);
   };
-
 
   const calculateDropdownPosition = useCallback(() => {
     if (!iconRef.current || !dropdownRef.current) return;
@@ -79,21 +76,15 @@ export default function Notification() {
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
 
-    // Posición top justo debajo del icono, sumando scroll vertical
     let top = iconRect.bottom + window.scrollY;
-
-    // Posición left inicialmente alineada al icono
     let left = iconRect.left + window.scrollX;
 
-    // Ajuste para que no se salga del viewport horizontal
     if (left + dropdownWidth > viewportWidth) {
-      left = viewportWidth - dropdownWidth - 10; // 10px margen del borde derecho
-      if (left < 0) left = 0; // que no quede negativo
+      left = viewportWidth - dropdownWidth - 10;
+      if (left < 0) left = 0;
     }
 
-    // Ajuste para que no se salga del viewport vertical (por si es muy baja la ventana)
     if (top + dropdownHeight > viewportHeight + window.scrollY) {
-      // Lo mostramos arriba del icono
       top = iconRect.top + window.scrollY - dropdownHeight;
       if (top < 0) top = 0;
     }
@@ -108,17 +99,39 @@ export default function Notification() {
         markAllRead();
         setTimeout(() => {
           calculateDropdownPosition();
-        }, 0); // aseguramos que el dropdown ya está en DOM
+        }, 0);
       }
       return newOpen;
     });
   };
 
+  // ** Aquí empieza la mejora 1: Cerrar al hacer click fuera **
+  useEffect(() => {
+    if (!isOpen) return;
+
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node) &&
+        iconRef.current &&
+        !iconRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+  // ** Fin mejora 1 **
+
   useEffect(() => {
     fetchNotifications();
   }, []);
 
-  // Recalcular posición al hacer resize para que el dropdown se mantenga visible
   useEffect(() => {
     if (!isOpen) return;
 
@@ -202,8 +215,6 @@ export default function Notification() {
     </div>
   );
 }
-
-
 
 
 // [
