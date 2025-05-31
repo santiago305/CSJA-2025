@@ -1,8 +1,15 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import axios from "axios";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-regular-svg-icons";
+import clsx from 'clsx';
+
+interface NotificationProps {
+  classNameDropdown?: string;
+  classNameBadge?: string;
+  classNameItem?: string;
+}
 
 type NotificationItem = {
   id: string;
@@ -13,7 +20,11 @@ type NotificationItem = {
 
 const PAGE_LIMIT = 5;
 
-export default function Notification() {
+export default function Notification({
+  classNameDropdown,
+  classNameBadge,
+  classNameItem,
+}: NotificationProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -85,9 +96,9 @@ export default function Notification() {
     [hasMore, totalNotifications]
   );
 
-  const markAllRead = () => {
+  const markAllRead = useCallback(() => {
     setNotifications((prev) => prev.map((notif) => ({ ...notif, read: true })));
-  };
+  }, []);
 
   // async function markNotificationReadAPI(id: string) {
   //   try {
@@ -96,14 +107,13 @@ export default function Notification() {
   //     console.error("Error marcando notificación leída en backend", error);
   //   }
   // }
-
-  const markAsRead = (id: string) => {
+  const markAsRead = useCallback((id: string) => {
     setNotifications((prev) =>
       prev.map((notif) => (notif.id === id ? { ...notif, read: true } : notif))
     );
-
     // markNotificationReadAPI(id);
-  };
+  }, []);
+
 
   const calculateDropdownPosition = useCallback(() => {
     if (!iconRef.current || !dropdownRef.current) return;
@@ -130,7 +140,7 @@ export default function Notification() {
     setDropdownPos({ top, left });
   }, []);
 
-  const toggleNotifications = () => {
+  const toggleNotifications = useCallback(() => {
     setIsOpen((prev) => {
       const newOpen = !prev;
       if (newOpen) {
@@ -142,7 +152,7 @@ export default function Notification() {
       }
       return newOpen;
     });
-  };
+  }, [markAllRead, fetchNotifications, calculateDropdownPosition]);
 
   // Cerrar dropdown al hacer click fuera
   useEffect(() => {
@@ -210,9 +220,9 @@ export default function Notification() {
   };
 
   // Calcular no leídos: total - leídos locales
-  const readCount = notifications.filter((n) => n.read).length;
-  const unreadCount = totalNotifications - readCount;
-  const displayCount = unreadCount > 99 ? "99+" : unreadCount;
+  const readCount = useMemo(() => notifications.filter((n) => n.read).length, [notifications]);
+  const unreadCount = useMemo(() => totalNotifications - readCount, [totalNotifications, readCount]);
+  const displayCount = useMemo(() => (unreadCount > 99 ? "99+" : unreadCount), [unreadCount]);
 
   return (
     <div className="relative" style={{ width: 24, height: 24 }}>
@@ -226,8 +236,11 @@ export default function Notification() {
         </motion.div>
 
         {unreadCount > 0 && (
-          <span
-            className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1 py-1 text-[10px] font-bold leading-none text-white bg-red-600 rounded-full"
+           <span
+            className={clsx(
+              "absolute -top-1 -right-1 inline-flex items-center justify-center px-1 py-1 text-[10px] font-bold leading-none text-white bg-red-600 rounded-full",
+              classNameBadge
+            )}
             style={{ minWidth: 10, height: 15 }}
             title={`${unreadCount} notificaciones no leídas`}
           >
@@ -235,11 +248,18 @@ export default function Notification() {
           </span>
         )}
       </div>
-
+      <AnimatePresence>
       {isOpen && (
-        <div
+        <motion.div
           ref={dropdownRef}
-          className="overflow-auto bg-white border border-gray-300 rounded-md shadow-lg z-50"
+          initial={{ opacity: 0, scale: 0.95, y: -10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: -10 }}
+          transition={{ duration: 0.2 }}
+          className={clsx(
+            "mt-3 overflow-auto bg-white border border-gray-300 rounded-md shadow-lg z-50",
+            classNameDropdown
+          )}
           style={{
             boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
             position: "fixed",
@@ -258,31 +278,49 @@ export default function Notification() {
 
           <ul>
             {notifications.map(({ id, title, message, read }) => (
-              <li
-                key={id}
-                onClick={() => markAsRead(id)}
-                className={`border-b border-gray-100 last:border-none p-3 hover:bg-gray-50 cursor-pointer ${
-                  read ? "bg-white text-gray-600" : "bg-gray-100 text-gray-900"
-                }`}
+            <motion.li
+              key={id}
+              onClick={() => markAsRead(id)}
+              initial={false}
+              animate={{
+                backgroundColor: read ? "#ffffff" : "#f3f4f6", // gris claro cuando no está leído
+                color: read ? "#4b5563" : "#111827", // texto más tenue si está leído
+                opacity: read ? 0.8 : 1,
+              }}
+              transition={{ duration: 0.3 }}
+              className={clsx(
+                  "border-b border-gray-100 last:border-none p-3 hover:bg-gray-50 cursor-pointer",
+                  classNameItem
+                )}
+            >
+              <div
+                style={{ display: "block", fontWeight: read ? "normal" : "bold" }}
+                className="text-sm"
               >
-                <div
-                  style={{ display: "block", fontWeight: read ? "normal" : "bold" }}
-                  className="text-sm"
-                >
-                  {title}
-                </div>
-                <div className="text-xs">{message}</div>
-              </li>
-            ))}
+                {title}
+              </div>
+              <div className="text-xs">{message}</div>
+            </motion.li>
+          ))}
           </ul>
           {loadingMore && (
             <div className="p-2 text-center text-gray-500">Cargando más...</div>
           )}
           {!hasMore && !loading && (
-            <div className="p-2 text-center text-gray-500">No hay más notificaciones</div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              transition={{ duration: 0.3 }}
+              className="p-4 text-center text-gray-500 text-sm flex flex-col items-center justify-center"
+            >
+              <div className="text-3xl mb-1">📭</div>
+              <span>No hay más notificaciones</span>
+            </motion.div>
           )}
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 }
