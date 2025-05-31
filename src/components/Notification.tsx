@@ -11,42 +11,68 @@ type NotificationItem = {
   read: boolean;
 };
 
+const PAGE_LIMIT = 5;
+
 export default function Notification() {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [totalNotifications, setTotalNotifications] = useState(0);
 
   const iconRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Estado para posición dropdown
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
-  async function fetchNotifications() {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await axios.get("https://jsonplaceholder.typicode.com/posts?_limit=5");
-      const data = res.data;
-      const notifs = data.map((item: any) => ({
-        id: item.id.toString(),
-        title: item.title,
-        message: item.body,
-        read: false,
-      }));
-      setNotifications(notifs);
-    } catch (e) {
-      setError("Error cargando notificaciones");
-    } finally {
-      setLoading(false);
-    }
-  }
+  // Fetch notifications page by page and read total count from header
+  const fetchNotifications = useCallback(
+    async (pageToLoad: number) => {
+      if (!hasMore && pageToLoad !== 0) return;
+      if (pageToLoad === 0) setLoading(true);
+      else setLoadingMore(true);
+      setError(null);
+
+      try {
+        const res = await axios.get(
+          `https://jsonplaceholder.typicode.com/posts?_start=${pageToLoad * PAGE_LIMIT}&_limit=${PAGE_LIMIT}`
+        );
+        const data = res.data;
+        // Leer total de notificaciones desde header
+        const totalCountHeader = res.headers["x-total-count"];
+        const totalCount = totalCountHeader ? parseInt(totalCountHeader, 10) : 0;
+        setTotalNotifications(totalCount);
+
+        const newNotifs = data.map((item: any) => ({
+          id: item.id.toString(),
+          title: item.title,
+          message: item.body,
+          read: false,
+        }));
+
+        if (pageToLoad === 0) {
+          setNotifications(newNotifs);
+        } else {
+          setNotifications((prev) => [...prev, ...newNotifs]);
+        }
+
+        setHasMore(newNotifs.length === PAGE_LIMIT);
+        setPage(pageToLoad);
+      } catch (e) {
+        setError("Error cargando notificaciones");
+      } finally {
+        setLoading(false);
+        setLoadingMore(false);
+      }
+    },
+    [hasMore]
+  );
 
   const markAllRead = () => {
-    setNotifications(prev =>
-      prev.map(notif => ({ ...notif, read: true }))
-    );
+    setNotifications((prev) => prev.map((notif) => ({ ...notif, read: true })));
   };
 
   // async function markNotificationReadAPI(id: string) {
@@ -58,10 +84,8 @@ export default function Notification() {
   // }
 
   const markAsRead = (id: string) => {
-    setNotifications(prev =>
-      prev.map(notif =>
-        notif.id === id ? { ...notif, read: true } : notif
-      )
+    setNotifications((prev) =>
+      prev.map((notif) => (notif.id === id ? { ...notif, read: true } : notif))
     );
 
     // markNotificationReadAPI(id);
@@ -93,10 +117,11 @@ export default function Notification() {
   }, []);
 
   const toggleNotifications = () => {
-    setIsOpen(prev => {
+    setIsOpen((prev) => {
       const newOpen = !prev;
       if (newOpen) {
         markAllRead();
+        fetchNotifications(0);
         setTimeout(() => {
           calculateDropdownPosition();
         }, 0);
@@ -105,7 +130,7 @@ export default function Notification() {
     });
   };
 
-  // ** Aquí empieza la mejora 1: Cerrar al hacer click fuera **
+  // Cerrar dropdown al hacer click fuera
   useEffect(() => {
     if (!isOpen) return;
 
@@ -126,18 +151,37 @@ export default function Notification() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen]);
-  // ** Fin mejora 1 **
 
-  useEffect(() => {
-    fetchNotifications();
-  }, []);
-
+  // Recalcular posición en resize
   useEffect(() => {
     if (!isOpen) return;
 
     window.addEventListener("resize", calculateDropdownPosition);
     return () => window.removeEventListener("resize", calculateDropdownPosition);
   }, [isOpen, calculateDropdownPosition]);
+
+  // Lazy loading al hacer scroll
+  useEffect(() => {
+    const dropdown = dropdownRef.current;
+    if (!dropdown || !isOpen) return;
+
+    function handleScroll() {
+      if (loadingMore || loading || !hasMore) return;
+      if (!dropdown) return;
+      const scrollTop = dropdown.scrollTop;
+      const scrollHeight = dropdown.scrollHeight;
+      const clientHeight = dropdown.clientHeight;
+
+      if (scrollHeight - scrollTop - clientHeight < 100) {
+        fetchNotifications(page + 1);
+      }
+    }
+
+    dropdown.addEventListener("scroll", handleScroll);
+    return () => {
+      dropdown.removeEventListener("scroll", handleScroll);
+    };
+  }, [fetchNotifications, hasMore, isOpen, loadingMore, loading, page]);
 
   const bellAnimation = {
     animate: {
@@ -150,6 +194,11 @@ export default function Notification() {
     },
   };
 
+  // Contar notificaciones no leídas basado en totalNotifications y las leídas locales
+  const readCount = notifications.filter((n) => n.read).length;
+  const unreadCount = totalNotifications - readCount;
+  const displayCount = unreadCount > 99 ? "99+" : unreadCount;
+
   return (
     <div className="relative" style={{ width: 24, height: 24 }}>
       <div
@@ -161,12 +210,13 @@ export default function Notification() {
           <FontAwesomeIcon icon={faBell} size="xl" color="#333" />
         </motion.div>
 
-        {notifications.filter(n => !n.read).length > 0 && (
+        {unreadCount > 0 && (
           <span
             className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1 py-1 text-[10px] font-bold leading-none text-white bg-red-600 rounded-full"
             style={{ minWidth: 10, height: 15 }}
+            title={`${unreadCount} notificaciones no leídas`}
           >
-            {notifications.filter(n => !n.read).length}
+            {displayCount}
           </span>
         )}
       </div>
@@ -210,6 +260,12 @@ export default function Notification() {
               </li>
             ))}
           </ul>
+          {loadingMore && (
+            <div className="p-2 text-center text-gray-500">Cargando más...</div>
+          )}
+          {!hasMore && !loading && (
+            <div className="p-2 text-center text-gray-500">No hay más notificaciones</div>
+          )}
         </div>
       )}
     </div>
