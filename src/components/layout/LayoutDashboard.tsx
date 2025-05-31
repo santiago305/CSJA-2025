@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../Sidebar";
+import TopSidebar from "../topSidebar";
 
 
 export default function LayoutDashboard() {
@@ -27,11 +28,7 @@ export default function LayoutDashboard() {
         <div
         className="w-full h-full"
         >
-          <div
-          className="w-full px-7 py-3 lg:py-5 bg-pink-400"
-          >
-            top
-          </div>
+          <TopSidebar />
           <div className="p-6">
             <Outlet />
           </div>
