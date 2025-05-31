@@ -26,10 +26,10 @@ export default function LayoutDashboard() {
         style={{ marginLeft: sidebarMargin }}
       >
         <div
-        className="w-full h-full"
+        className="w-full h-full flex flex-col"
         >
           <TopSidebar />
-          <div className="p-6">
+          <div className="w-full h-full p-6 bg-[#f8f8f8]">
             <Outlet />
           </div>
         </div>
