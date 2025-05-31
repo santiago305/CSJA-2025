@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReact } from '@fortawesome/free-brands-svg-icons';
 import { useSidebarMenu } from "../hooks/useSidebarMenu";
 import clsx from "clsx";
+import ShimmerLoader from "./loadings/ShimmerLoader";
 
 interface SidebarProps {
   isFixedExpanded: boolean;
@@ -106,12 +107,18 @@ export default function Sidebar({
 
         {/* Loading y error */}
         {loading && (
-          <div className="p-4 text-center text-gray-500">Cargando menú...</div>
+          <div className="p-4 w-full h-full">
+            <ShimmerLoader />
+          </div>
         )}
-        {error && <div className="p-4 text-center text-red-500">{error}</div>}
+
+        {error && <div className={clsx("p-4 h-full flex justify-center items-center text-center text-red-500 break-words")}>
+          {isExpanded ? (error) : ("Error")}
+          
+        </div>}
 
         {/* Menú */}
-        <nav className="flex-1 p-2 space-y-4 select-none overflow-auto">
+      <nav className="flex-1 p-2 space-y-4 select-none overflow-y-auto overflow-x-hidden custom-scroll">
           {menu.map((section, idx) => (
             <div key={idx}>
               {isExpanded && (
