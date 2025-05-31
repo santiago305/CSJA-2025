@@ -28,6 +28,21 @@ export default function Notification() {
 
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
+  // Llamada inicial solo para obtener el total de notificaciones
+  useEffect(() => {
+    async function fetchTotal() {
+      try {
+        const res = await axios.get(`https://jsonplaceholder.typicode.com/posts?_start=0&_limit=1`);
+        const totalCountHeader = res.headers["x-total-count"];
+        const totalCount = totalCountHeader ? parseInt(totalCountHeader, 10) : 0;
+        setTotalNotifications(totalCount);
+      } catch {
+        // No hacemos nada especial si falla aquí, badge quedará vacío
+      }
+    }
+    fetchTotal();
+  }, []);
+
   // Fetch notifications page by page and read total count from header
   const fetchNotifications = useCallback(
     async (pageToLoad: number) => {
@@ -41,9 +56,8 @@ export default function Notification() {
           `https://jsonplaceholder.typicode.com/posts?_start=${pageToLoad * PAGE_LIMIT}&_limit=${PAGE_LIMIT}`
         );
         const data = res.data;
-        // Leer total de notificaciones desde header
         const totalCountHeader = res.headers["x-total-count"];
-        const totalCount = totalCountHeader ? parseInt(totalCountHeader, 10) : 0;
+        const totalCount = totalCountHeader ? parseInt(totalCountHeader, 10) : totalNotifications;
         setTotalNotifications(totalCount);
 
         const newNotifs = data.map((item: any) => ({
@@ -68,7 +82,7 @@ export default function Notification() {
         setLoadingMore(false);
       }
     },
-    [hasMore]
+    [hasMore, totalNotifications]
   );
 
   const markAllRead = () => {
@@ -168,6 +182,7 @@ export default function Notification() {
     function handleScroll() {
       if (loadingMore || loading || !hasMore) return;
       if (!dropdown) return;
+
       const scrollTop = dropdown.scrollTop;
       const scrollHeight = dropdown.scrollHeight;
       const clientHeight = dropdown.clientHeight;
@@ -194,7 +209,7 @@ export default function Notification() {
     },
   };
 
-  // Contar notificaciones no leídas basado en totalNotifications y las leídas locales
+  // Calcular no leídos: total - leídos locales
   const readCount = notifications.filter((n) => n.read).length;
   const unreadCount = totalNotifications - readCount;
   const displayCount = unreadCount > 99 ? "99+" : unreadCount;
@@ -271,7 +286,6 @@ export default function Notification() {
     </div>
   );
 }
-
 
 // [
 //   {
