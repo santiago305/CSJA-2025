@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect, type ReactElement } from "react";
-import { Menu, X, Grid, Layers, Users, Archive, Settings } from "react-feather";
+import { Menu, Grid, Layers, Users, Archive, Settings, Award } from "react-feather";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReact } from '@fortawesome/free-brands-svg-icons';
 import { useSidebarMenu } from "../hooks/useSidebarMenu";
+import clsx from "clsx";
 
 interface SidebarProps {
   isFixedExpanded: boolean;
@@ -14,7 +15,7 @@ interface SidebarProps {
 export default function Sidebar({
   isFixedExpanded,
   setIsFixedExpanded,
-  expandedWidth = 250,
+  expandedWidth = 270,
   collapsedWidth = 70,
 }: SidebarProps) {
   const [isHovering, setIsHovering] = useState(false);
@@ -53,7 +54,7 @@ export default function Sidebar({
   const iconMap: Record<string, ReactElement> = {
     Dashboard: <Grid size={16} />,
     Tickets: <Archive size={16} />,
-    "Respuestas Predeterminada": <Settings size={16} />,
+    "Respuestas Predeterminada": <Award size={16} />,
     Agenda: <Menu size={16} />,
     Areas: <Layers size={16} />,
     Usuarios: <Users size={16} />,
@@ -76,26 +77,32 @@ export default function Sidebar({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="flex flex-col h-full">
+      <div className={clsx("flex flex-col h-full", {
+        "items-center": !isExpanded
+      })}>
         {/* Header */}
-        {isExpanded && (
-          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200">
-            <div className="flex items-center space-x-2">
-              <FontAwesomeIcon icon={faReact} className="text-purple-600" />
-              <span className="font-bold text-purple-600 text-lg">Cuba</span>
-            </div>
+        <div className="flex items-center justify-between px-4 py-5">
+          <div className="flex items-center space-x-2">
+            <FontAwesomeIcon icon={faReact} size="2x" />
+            {isExpanded && (
+              <span className="font-bold  text-lg">Cuba</span>
+            )}
+          </div>
+          {isExpanded && (
             <button
-              className="p-1 rounded"
+              className="p-1 rounded cursor-pointer"
               onClick={() => {
                 setIsFixedExpanded(!isFixedExpanded);
                 setIsHovering(false);
                 setIsOverlay(false);
               }}
             >
-              {isFixedExpanded ? <X size={16} /> : <Menu size={16} />}
+              {/* {isFixedExpanded ? <Grid size={16} /> : <Grid size={16} />} */}
+              <Grid size={16} />
             </button>
-          </div>
-        )}
+          )}
+        </div>
+
 
         {/* Loading y error */}
         {loading && (
@@ -108,19 +115,27 @@ export default function Sidebar({
           {menu.map((section, idx) => (
             <div key={idx}>
               {isExpanded && (
-                <div className="text-xs font-bold text-purple-700 px-2 py-1 bg-purple-100 rounded">
+                <div className="mb-2 text-sm font-bold text-primary p-4 bg-[rgba(115,102,255,0.06)] rounded">
                   {section.header}
                 </div>
               )}
-              <div className="mt-2 space-y-2">
+              <div className=" space-y-2">
                 {section.items.map((item) => (
                   <div
                     key={item.row}
-                    className="flex items-center space-x-3 px-2 py-1 hover:bg-purple-50 rounded cursor-pointer"
+                    className="flex items-center space-x-3 p-3 hover:bg-[rgba(115,102,255,0.06)] hover:text-primary rounded cursor-pointer transition-all duration-300"
                   >
                     {iconMap[item.nombre] || <Menu size={16} />}
                     {isExpanded && (
-                      <span className="whitespace-nowrap">{item.nombre}</span>
+                    <span
+                      className={`leading-snug ${
+                        isExpanded
+                          ? "break-words"
+                          : "whitespace-nowrap overflow-hidden text-ellipsis max-w-[140px]"
+                      }`}
+                    >
+                        {item.nombre}
+                      </span>
                     )}
                   </div>
                 ))}
