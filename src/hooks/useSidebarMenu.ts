@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import type { GroupedMenu, MenuItem } from "../types/menu";
 import { groupMenuData } from "../utils/groupMenuData";
+import { envs } from "../config/envs";
 
 export function useSidebarMenu(userId: number) {
   const [menu, setMenu] = useState<GroupedMenu[]>([]);
@@ -17,7 +18,7 @@ export function useSidebarMenu(userId: number) {
         ? 'https://www.desarrolloaqp.somee.com'
         : '/api';
         const response = await axios.get<MenuItem[]>(
-          `${BASE_URL}/api/MenuSistema/MenuListar/${userId}`
+          `${envs.apiUrl}/MenuSistema/MenuListar/${userId}`
         );
         const grouped = groupMenuData(response.data);
         setMenu(grouped);
