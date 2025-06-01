@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect, type ReactElement } from "react";
-import { Menu, Grid, Layers, Users, Archive, Settings, Award } from "react-feather";
+import { useState, useRef, useEffect, } from "react";
+import * as Icons from "react-feather"; // Importa todos los iconos
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReact } from '@fortawesome/free-brands-svg-icons';
 import { useSidebarMenu } from "../hooks/useSidebarMenu";
@@ -52,16 +52,6 @@ export default function Sidebar({
   const width = isFixedExpanded || isHovering ? expandedWidth : collapsedWidth;
   const isExpanded = isFixedExpanded || isHovering;
 
-  const iconMap: Record<string, ReactElement> = {
-    Dashboard: <Grid size={16} />,
-    Tickets: <Archive size={16} />,
-    "Respuestas Predeterminada": <Award size={16} />,
-    Agenda: <Menu size={16} />,
-    Areas: <Layers size={16} />,
-    Usuarios: <Users size={16} />,
-    Roles: <Settings size={16} />,
-  };
-
   return (
     <aside
       className={`bg-white h-full overflow-hidden transition-all duration-300 ease-in-out shadow-md ${
@@ -86,7 +76,7 @@ export default function Sidebar({
           <div className="flex items-center space-x-2">
             <FontAwesomeIcon icon={faReact} size="2x" />
             {isExpanded && (
-              <span className="font-bold  text-lg">Cuba</span>
+              <span className="font-bold text-lg">Cuba</span>
             )}
           </div>
           {isExpanded && (
@@ -98,12 +88,10 @@ export default function Sidebar({
                 setIsOverlay(false);
               }}
             >
-              {/* {isFixedExpanded ? <Grid size={16} /> : <Grid size={16} />} */}
-              <Grid size={16} />
+              <Icons.Grid size={16} />
             </button>
           )}
         </div>
-
 
         {/* Loading y error */}
         {loading && (
@@ -112,13 +100,18 @@ export default function Sidebar({
           </div>
         )}
 
-        {error && <div className={clsx("p-4 h-full flex justify-center items-center text-center text-red-500 break-words")}>
-          {isExpanded ? (error) : ("Error")}
-          
-        </div>}
+        {error && (
+          <div
+            className={clsx(
+              "p-4 h-full flex justify-center items-center text-center text-red-500 break-words"
+            )}
+          >
+            {isExpanded ? error : "Error"}
+          </div>
+        )}
 
         {/* Menú */}
-      <nav className="flex-1 p-2 space-y-4 select-none overflow-y-auto overflow-x-hidden custom-scroll">
+        <nav className="flex-1 p-2 space-y-4 select-none overflow-y-auto overflow-x-hidden custom-scroll">
           {menu.map((section, idx) => (
             <div key={idx}>
               {isExpanded && (
@@ -126,26 +119,34 @@ export default function Sidebar({
                   {section.header}
                 </div>
               )}
-              <div className=" space-y-2">
-                {section.items.map((item) => (
-                  <div
-                    key={item.row}
-                    className="flex items-center space-x-3 p-3 hover:bg-[rgba(115,102,255,0.06)] hover:text-primary rounded cursor-pointer transition-all duration-300"
-                  >
-                    {iconMap[item.nombre] || <Menu size={16} />}
-                    {isExpanded && (
-                    <span
-                      className={`leading-snug ${
-                        isExpanded
-                          ? "break-words"
-                          : "whitespace-nowrap overflow-hidden text-ellipsis max-w-[140px]"
-                      }`}
+              <div className="space-y-2">
+                {section.items.map((item) => {
+                  // Busca el icono dinámicamente, usa Icons.Menu si no existe
+                  const IconComponent =
+                    item.icon && (Icons as any)[item.icon]
+                      ? (Icons as any)[item.icon]
+                      : Icons.Menu;
+
+                  return (
+                    <div
+                      key={item.row}
+                      className="flex items-center space-x-3 p-3 hover:bg-[rgba(115,102,255,0.06)] hover:text-primary rounded cursor-pointer transition-all duration-300"
                     >
-                        {item.nombre}
-                      </span>
-                    )}
-                  </div>
-                ))}
+                      <IconComponent size={16} />
+                      {isExpanded && (
+                        <span
+                          className={`leading-snug ${
+                            isExpanded
+                              ? "break-words"
+                              : "whitespace-nowrap overflow-hidden text-ellipsis max-w-[140px]"
+                          }`}
+                        >
+                          {item.nombre}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ))}
