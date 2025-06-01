@@ -1,0 +1,3 @@
+version de Node: 22.12.0
+como instlador de paquetes
+npm o pnpm
