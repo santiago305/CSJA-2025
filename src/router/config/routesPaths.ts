@@ -9,7 +9,7 @@ export const RoutesPaths = {
 
   // 📊 Rutas de Dashboard
   dashboard: "dashboard",
-  dashboardRegister: "register",
+  dashboardRegister: "usuario",
   dashboardProfile: "/dashboard/profile",
   dashboardSettings: "/dashboard/settings",
 } as const;

@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import type { GroupedMenu, MenuItem } from "../types/menu";
 import { groupMenuData } from "../utils/groupMenuData";
 import { envs } from "../config/envs";
+import axiosInstance from "../utils/axios";
 
 export function useSidebarMenu(userId: number) {
   const [menu, setMenu] = useState<GroupedMenu[]>([]);
@@ -14,7 +14,7 @@ export function useSidebarMenu(userId: number) {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get<MenuItem[]>(
+        const response = await axiosInstance.get<MenuItem[]>(
           `${envs.apiUrl}/MenuSistema/MenuListar/${userId}`
         );
         const grouped = groupMenuData(response.data);

@@ -5,7 +5,7 @@ import { logoutUser, refresh_token } from '../service/authService';
 
 const axiosInstance = axios.create({
   baseURL: envs.apiUrl,
-  // withCredentials: true,
+  withCredentials: true,
 });
 
 let isRefreshing = false;
