@@ -1,10 +1,17 @@
-import { useState, useRef, useEffect, } from "react";
+import { useState, useRef, useEffect } from "react";
 import * as Icons from "react-feather"; // Importa todos los iconos
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReact } from '@fortawesome/free-brands-svg-icons';
 import { useSidebarMenu } from "../hooks/useSidebarMenu";
 import clsx from "clsx";
 import ShimmerLoader from "./loadings/ShimmerLoader";
+
+// IMPORTA NavLink de react-router-dom para navegación SPA
+import { NavLink } from "react-router-dom";
+import { RoutesPaths } from "../router/config/routesPaths";
+
+// IMPORTA las rutas base para concatenar la url dinámica
+
 
 interface SidebarProps {
   isFixedExpanded: boolean;
@@ -52,6 +59,9 @@ export default function Sidebar({
   const width = isFixedExpanded || isHovering ? expandedWidth : collapsedWidth;
   const isExpanded = isFixedExpanded || isHovering;
 
+  // Ruta base para concatenar las rutas dinámicas de cada item
+  const basePath = RoutesPaths.root ; // ejemplo: "/CSJA-2025/dashboard"
+
   return (
     <aside
       className={`bg-white h-full overflow-hidden transition-all duration-300 ease-in-out shadow-md ${
@@ -68,16 +78,16 @@ export default function Sidebar({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className={clsx("flex flex-col h-full", {
-        "items-center": !isExpanded
-      })}>
+      <div
+        className={clsx("flex flex-col h-full", {
+          "items-center": !isExpanded,
+        })}
+      >
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-5">
           <div className="flex items-center space-x-2">
             <FontAwesomeIcon icon={faReact} size="2x" />
-            {isExpanded && (
-              <span className="font-bold text-lg">Cuba</span>
-            )}
+            {isExpanded && <span className="font-bold text-lg">Cuba</span>}
           </div>
           {isExpanded && (
             <button
@@ -121,17 +131,23 @@ export default function Sidebar({
               )}
               <div className="space-y-2">
                 {section.items.map((item) => {
-                  // Busca el icono dinámicamente, usa Icons.Menu si no existe
+                  // Icono dinámico con fallback a Menu
                   const IconComponent =
                     item.icon && (Icons as any)[item.icon]
                       ? (Icons as any)[item.icon]
                       : Icons.Menu;
 
-                  return (
-                    <div
-                      key={item.row}
-                      className="flex items-center space-x-3 p-3 hover:bg-[rgba(115,102,255,0.06)] hover:text-primary rounded cursor-pointer transition-all duration-300"
-                    >
+                  // Construcción dinámica de la ruta completa con basePath + accion
+                  // Si accion no existe, queda null y no es link
+                  const to = item.accion
+                    ? item.accion.startsWith("/")
+                      ? basePath + item.accion // ej: "/dashboard" + "/usuario" = "/dashboard/usuario"
+                      : basePath + "/" + item.accion
+                    : null;
+
+                  // Contenido común del item (icono + texto)
+                  const content = (
+                    <>
                       <IconComponent size={16} />
                       {isExpanded && (
                         <span
@@ -144,6 +160,30 @@ export default function Sidebar({
                           {item.nombre}
                         </span>
                       )}
+                    </>
+                  );
+
+                  // Si tiene ruta, renderiza NavLink, si no solo div no clickeable
+                  return to ? (
+                    <NavLink
+                      key={item.row}
+                      to={to}
+                      className={({ isActive }) =>
+                        clsx(
+                          "flex items-center space-x-3 p-3 rounded cursor-pointer transition-all duration-300 hover:bg-[rgba(115,102,255,0.06)] hover:text-primary",
+                          isActive && "bg-primary text-white"
+                        )
+                      }
+                      end
+                    >
+                      {content}
+                    </NavLink>
+                  ) : (
+                    <div
+                      key={item.row}
+                      className="flex items-center space-x-3 p-3 rounded cursor-default text-gray-500 select-none"
+                    >
+                      {content}
                     </div>
                   );
                 })}

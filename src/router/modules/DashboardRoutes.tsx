@@ -25,7 +25,7 @@ const RegisterUserDashboard = lazy(() => import("../../pages/dashboard/RegisterU
 
 export const dashboardRoutes: RouteObject[] = [
   {
-    path: `${RoutesPaths.root}${RoutesPaths.dashboard}`,
+    path: `${RoutesPaths.root}`,
     element: (
       // <PrivateRoute>
         <DashboardLayout />
@@ -33,7 +33,11 @@ export const dashboardRoutes: RouteObject[] = [
     ),
     errorElement: <ErrorPage />,
     children: [
-      { index: true, element: <Dashboard /> }, // /dashboard
+      { 
+        // index: true, 
+        path: RoutesPaths.dashboard,
+        element: <Dashboard /> 
+      }, // /dashboard
       { 
         path: RoutesPaths.dashboardRegister,
         element: <RegisterUserDashboard /> 

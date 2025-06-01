@@ -1,7 +1,7 @@
 export const RoutesPaths = {
 
   // ruta madre
-  root: "/CSJA-2025/",
+  root: "/CSJA-2025",
 
   // 🔐 Rutas de autenticación
   login: "login",
