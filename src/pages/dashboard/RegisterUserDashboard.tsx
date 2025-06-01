@@ -1,4 +1,4 @@
-import RegisterForm from "../../components/auth/RegisterForm";
+import RegisterFormDashboard from "../../components/auth/RegisterFormDashboard";
 
 export default function RegisterUserDashboard() {
   return (
@@ -8,9 +8,9 @@ export default function RegisterUserDashboard() {
       <h3
       className="text-2xl font-semibold text-gray-800 dark:text-white mb-6"
       >
-        Dashboard
+        Registra a un tecnico
       </h3>
-      <RegisterForm />
+      <RegisterFormDashboard />
     </div>
   )
 }

@@ -14,7 +14,7 @@ interface FormFieldProps {
 
 export default function FormField({ name, label, placeholder = "", type = "text", register, error }: FormFieldProps) {
   return (
-    <div className="grid gap-1">
+    <div className="grid gap-1 flex-1">
       <Label htmlFor={name}>{label}</Label>
       <Input {...register(name)} type={type} placeholder={placeholder} />
       <div className="min-h-3 h-auto">

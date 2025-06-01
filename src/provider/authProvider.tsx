@@ -3,7 +3,7 @@ import type { PropsUrl } from "../types/PropsUrl";
 import { checkTokenValidity, loginUser, logoutUser, registerUser } from "../service/authService";
 import type { LoginCredentials, RegisterCredentials } from "../types/auth";
 import type { AuthResponse } from '../types/AuthResponse';
-import { AuthContext } from "../context/authContext";
+import { AuthContext } from "../context/AuthContext"
 export const AuthProvider = ({ children }: PropsUrl) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
