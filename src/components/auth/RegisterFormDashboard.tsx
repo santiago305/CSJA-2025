@@ -33,7 +33,7 @@ function RegisterFormDashboard({ className, ...props }: React.ComponentProps<"di
         if (response.success){
             console.log(response.message)
           // showFlash(successResponse(response.message));
-          navigate(`${RoutesPaths.root}${RoutesPaths.dashboard}`, { replace: true });
+          navigate(`${RoutesPaths.root}/${RoutesPaths.dashboard}`, { replace: true });
         } else {
           console.log(response.message)
           // showFlash(errorResponse(response.message));
@@ -62,35 +62,35 @@ function RegisterFormDashboard({ className, ...props }: React.ComponentProps<"di
               className="flex gap-5 w-full"
               >
                 <FormField
-                  name="name" 
+                  name="nombre" 
                   label="Nombre" 
                   placeholder="Jhonathan" 
                   register={register} 
-                  error={errors.name?.message} 
+                  error={errors.nombre?.message} 
                 />
                 <FormField
-                  name="lastName" 
+                  name="apellido" 
                   label="apellidos" 
                   placeholder="Rojas purisaca" 
                   register={register} 
-                  error={errors.lastName?.message} 
+                  error={errors.apellido?.message} 
                 />
               </div>
               <FormField
-                name="email" 
+                name="correo" 
                 label="Correo Electrónico" 
                 placeholder="test@gmail.com" 
                 register={register} 
-                error={errors.email?.message} 
+                error={errors.correo?.message} 
               />
 
               <FormField 
-                name="password" 
+                name="clave" 
                 label="Contraseña" 
                 placeholder="password"
                 type="password" 
                 register={register} 
-                error={errors.password?.message} 
+                error={errors.clave?.message} 
               />
 
               <Button type="submit" className="w-full" disabled={submitting}>

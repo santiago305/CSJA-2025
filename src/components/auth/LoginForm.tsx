@@ -34,7 +34,7 @@ function LoginForm({ className, ...props }: React.ComponentProps<"div">) {
       if (response.success){
         console.log(response.message)
         // showFlash(successResponse(response.message));
-        navigate(`${RoutesPaths.root}${RoutesPaths.dashboard}`, { replace: true });
+        navigate(`${RoutesPaths.root}/${RoutesPaths.dashboard}`, { replace: true });
       } else {
         console.log(response.message)
         // showFlash(errorResponse(response.message));

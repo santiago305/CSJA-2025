@@ -53,14 +53,14 @@ export const AuthProvider = ({ children }: PropsUrl) => {
   const Register = async (payload: RegisterCredentials): Promise<AuthResponse> => {
     try {
       const data = await registerUser(payload);
-      if (data?.access_token) {
-        await checkAuth();
+      if (data) {
+        // await checkAuth();
         return { success: true, message: "Registro exitoso" };
       } else {
         return { success: false, message: "Error al registrar usuario" };
       }
     } catch (error: any) {
-      const message = error.response?.data?.message || "Error en el registro";
+      const message =  "Error en el registro";
       return { success: false, message };
     }
   };

@@ -34,6 +34,7 @@ export const loginUser = async (payload: LoginCredentials):Promise<AuthService> 
 export const registerUser = async (payload: RegisterCredentials):Promise<AuthService> => {
   try {
     const response = await axiosInstance.post(API_AUTH_GROUP.register, payload)
+    
     return response.data;
   } catch (error) {
     console.error("error en registerUser",error);
