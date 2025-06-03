@@ -1,0 +1,2 @@
+const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/RegisterForm-V6yAvkQc.js","assets/index-CYfrBSD8.js","assets/index-wMpbrceS.css","assets/formField-CBBzkc95.js","assets/useAuth-C7uueBDl.js"])))=>i.map(i=>d[i]);
+import{j as r,r as t,_ as e}from"./index-CYfrBSD8.js";const o=t.lazy(()=>e(()=>import("./RegisterForm-V6yAvkQc.js"),__vite__mapDeps([0,1,2,3,4])));function a(){return r.jsx(o,{})}export{a as default};
